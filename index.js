@@ -27,7 +27,7 @@ client.on('guildMemberAdd', async (member) => {
     const imageBuffer = await createCompositeImage(avatarURL, memberCount, memberName);
 
     // Define the ID of the welcome channel
-    const welcomeChannelId = 'INSERT-CHANNEL-ID'; // Replace with your channel ID
+    const welcomeChannelId = 'CHANNEL-ID'; // Replace with your channel ID
 
     // Find the welcome channel
     const channel = member.guild.channels.cache.get(welcomeChannelId);
@@ -35,11 +35,11 @@ client.on('guildMemberAdd', async (member) => {
     // Send the image and a welcome message if the channel exists
     if (channel) {
         const attachment = new AttachmentBuilder(imageBuffer, { name: 'welcome-image.jpg' });
-        channel.send({ content: `Welcome to the server, ${member.user.username}! 🎉`, files: [attachment] }); // This is the channel message
+        channel.send({ content: `Welcome to our community, ${member.user.username}! With you, we are ${memberCount} members. 🎉 Click [here](https://app.codegpt.co/en) to access CodeGPT's Studio and start customizing your agents!🤖`, files: [attachment] }); // This is the channel message
     } else {
         console.log('Welcome channel not found');
     }
 });
 
 // Log in to Discord with your bot token
-client.login("INSERT-BOT-TOKEN");
+client.login("BOT-TOKEN"); // Replace with your bot token
