@@ -7,9 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [godspeed],
-  "author": "",
+  "author": "dex",
   "license": "ISC",
-  "dependencies": {
+  "dependencies": {}
     "canvas": "^2.11.2",
     "discord.js": "^14.16.3"
   }
