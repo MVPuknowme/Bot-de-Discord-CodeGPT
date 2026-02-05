@@ -1,0 +1,23 @@
+name: Weekly Email
+
+on:
+  schedule:
+    - cron: "0 9 * * 1"
+  workflow_dispatch:
+
+jobs:
+  send_email:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send weekly email
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.SMTP_SERVER }}
+          server_port: ${{ secrets.SMTP_PORT }}
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          subject: Weekly update
+          to: ${{ secrets.WEEKLY_EMAIL_TO }}
+          from: ${{ secrets.WEEKLY_EMAIL_FROM }}
+          body: |
+            Weekly update from the Discord bot project.
