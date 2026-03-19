@@ -1,0 +1,23 @@
+name: Weekly email
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+
+jobs:
+  send-weekly-email:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send weekly email
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.SMTP_SERVER }}
+          server_port: ${{ secrets.SMTP_PORT }}
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          subject: ${{ secrets.WEEKLY_EMAIL_SUBJECT }}
+          to: ${{ secrets.WEEKLY_EMAIL_TO }}
+          from: ${{ secrets.WEEKLY_EMAIL_FROM }}
+          body: ${{ secrets.WEEKLY_EMAIL_BODY }}
+          secure: true
