@@ -1,0 +1,33 @@
+name: Weekly White Rabbit Email
+
+on:
+  schedule:
+    - cron: "0 9 * * 1"
+
+jobs:
+  send-weekly-email:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Generate White Rabbit metadata
+        run: python scripts/generate_white_rabbit_metadata.py
+
+      - name: Send email
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.EMAIL_SERVER_ADDRESS }}
+          server_port: ${{ secrets.EMAIL_SERVER_PORT }}
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "Weekly White Rabbit Token Update"
+          to: ${{ secrets.EMAIL_TO }}
+          from: ${{ secrets.EMAIL_FROM }}
+          body: "Weekly White Rabbit token metadata is attached."
+          attachments: data/white_rabbit_token_metadata.json,data/white_rabbit_token_info.txt
