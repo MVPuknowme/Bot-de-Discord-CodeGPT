@@ -8,7 +8,7 @@ const client = new Client({
   ]
 });
 
-const PERIWINKLE = 0xCCCCFF;
+const orange = 0xCCCCFF;
 
 client.once('ready', () => {
   console.log(`Logged in as ${client.user.tag}`);
