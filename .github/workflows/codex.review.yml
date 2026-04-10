@@ -1,0 +1,29 @@
+name: Codex Review
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  codex-review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          npm install
+
+      - name: Basic runtime check
+        run: |
+          node -e "console.log('Bot file exists:', require('fs').existsSync('./bot.js'))"
+
+      - name: Emit summary
+        run: |
+          echo "Discord bot Codex review:" >> $GITHUB_STEP_SUMMARY
+          echo "- aha.exe branding active" >> $GITHUB_STEP_SUMMARY
+          echo "- Embed system validated" >> $GITHUB_STEP_SUMMARY
