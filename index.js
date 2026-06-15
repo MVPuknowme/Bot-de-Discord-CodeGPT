@@ -1,14 +1,18 @@
 const { Client, GatewayIntentBits, AttachmentBuilder } = require('discord.js');
-const { createCompositeImage } = require('./canvasy'); // Import the function from canvasy.js
+const { createCompositeImage } = require('./canvasy');
 
 const gitlabConfig = {
     baseUrl: process.env.GITLAB_BASE_URL || 'https://gitlab.com',
     clientId: process.env.GITLAB_CLIENT_ID,
     redirectUri: process.env.GITLAB_REDIRECT_URI
 };
-const discordInviteUrl = 'https://discord.gg/YJ5B2YRRP';
+
+const discordInviteUrl = process.env.DISCORD_INVITE_URL || 'https://discord.gg/YJ5B2YRRP';
 const welcomeChannelId = process.env.WELCOME_CHANNEL_ID;
 const botToken = process.env.BOT_TOKEN;
+const gasNetwork = process.env.GAS_NETWORK || 'base';
+const publicTreasuryAddress = process.env.PUBLIC_TREASURY_ADDRESS || '';
+const skygridStatusUrl = process.env.SKYGRID_STATUS_URL || 'https://skygrid-protocol.net/api/status';
 
 const buildGitlabOauthUrl = ({ baseUrl, clientId, redirectUri }) => {
     if (!clientId || !redirectUri) {
@@ -25,32 +29,51 @@ const buildGitlabOauthUrl = ({ baseUrl, clientId, redirectUri }) => {
     return `${baseUrl}/oauth/authorize?${params.toString()}`;
 };
 
+const commandHandlers = new Map([
+    ['!help', () => [
+        '🤖 **Available commands**',
+        '`!connect-gitlab` - Get the configured GitLab OAuth link.',
+        '`!gas status` - Show the configured network watch label.',
+        '`!bridge status` - Show Discord bridge readiness.',
+        '`!skygrid status` - Show the configured SKYGRID status URL.'
+    ].join('\n')],
+    ['!gas status', () => [
+        '⚡ **Gas Watch Status**',
+        `Network: ${gasNetwork}`,
+        `Watch address: ${publicTreasuryAddress || 'not configured'}`,
+        'Mode: read-only status display'
+    ].join('\n')],
+    ['!bridge status', () => [
+        '🌉 **Bridge Status**',
+        'Discord command layer: online',
+        'Operations docs: docs/discord-operations.md',
+        'Live telemetry: pending integration'
+    ].join('\n')],
+    ['!skygrid status', () => [
+        '🛰️ **SKYGRID Status**',
+        `Status endpoint: ${skygridStatusUrl}`,
+        'Live fetch: pending integration'
+    ].join('\n')]
+]);
+
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
-        GatewayIntentBits.GuildMembers, // Required to listen for member join events
+        GatewayIntentBits.GuildMembers,
         GatewayIntentBits.GuildMessages,
         GatewayIntentBits.MessageContent
     ]
 });
 
-// Log in when the bot is ready
 client.once('ready', () => {
-    console.log('Bot is online!');
+    console.log(`Bot is online as ${client.user.tag}`);
 });
 
 client.on('guildMemberAdd', async (member) => {
-    // Get the profile picture URL of the member
     const originalUrl = member.user.displayAvatarURL({ format: 'png', dynamic: true, size: 1024 });
     const avatarURL = originalUrl.replace('.webp', '.png');
-
-    // Get the number of members in the server
     const memberCount = member.guild.memberCount;
-
-    // Get the user's name of the member
     const memberName = member.user.username;
-
-    // Create the image buffer using the profile picture
     const imageBuffer = await createCompositeImage(avatarURL, memberCount, memberName);
 
     if (!welcomeChannelId) {
@@ -60,7 +83,6 @@ client.on('guildMemberAdd', async (member) => {
 
     const channel = member.guild.channels.cache.get(welcomeChannelId);
 
-    // Send the image and a welcome message if the channel exists
     if (channel) {
         const attachment = new AttachmentBuilder(imageBuffer, { name: 'welcome-image.jpg' });
         const welcomeMessage = [
@@ -79,23 +101,27 @@ client.on('messageCreate', async (message) => {
         return;
     }
 
-    if (message.content.toLowerCase() !== '!connect-gitlab') {
+    const content = message.content.trim().toLowerCase();
+
+    if (content === '!connect-gitlab') {
+        const oauthUrl = buildGitlabOauthUrl(gitlabConfig);
+
+        if (!oauthUrl) {
+            await message.reply('GitLab connection is not configured yet. Please set GITLAB_CLIENT_ID and GITLAB_REDIRECT_URI.');
+            return;
+        }
+
+        await message.reply(`Connect your GitLab account here: ${oauthUrl}`);
         return;
     }
 
-    const oauthUrl = buildGitlabOauthUrl(gitlabConfig);
+    const handler = commandHandlers.get(content);
 
-    if (!oauthUrl) {
-        await message.reply(
-            'GitLab connection is not configured yet. Please set GITLAB_CLIENT_ID and GITLAB_REDIRECT_URI.'
-        );
-        return;
+    if (handler) {
+        await message.reply(handler());
     }
-
-    await message.reply(`Connect your GitLab account here: ${oauthUrl}`);
 });
 
-// Log in to Discord with your bot token
 if (!botToken) {
     console.error('BOT_TOKEN is not configured.');
     process.exit(1);
