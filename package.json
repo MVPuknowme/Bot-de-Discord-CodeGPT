@@ -1,15 +1,22 @@
 {
   "name": "discordbotcam",
   "version": "1.0.0",
-  "description": "",
+  "description": "Discord bot with welcome images, GitLab connection helper, and safe Web3 gas status commands.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "check": "node --check index.js && node --check canvasy.js",
+    "test": "npm run check"
   },
-  "keywords": [],
+  "keywords": [
+    "discord",
+    "bot",
+    "web3",
+    "gas-status"
+  ],
   "author": "dex",
   "license": "ISC",
-  "dependencies": {}
+  "dependencies": {
     "canvas": "^2.11.2",
     "discord.js": "^14.16.3"
   }
