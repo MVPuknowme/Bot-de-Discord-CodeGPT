@@ -17,7 +17,7 @@
   "author": "dex",
   "license": "ISC",
   "dependencies": {
-    "canvas": "^2.11.2",
+    "canvas": "^3.2.3",
     "discord.js": "^14.16.3"
   }
 }
