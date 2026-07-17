@@ -27,7 +27,7 @@ jobs:
       - name: Install dependencies
         run: npm ci --no-audit --no-fund
 
-      - name: Validate bot and canvas runtime
+      - name: Validate bot, dev container, and canvas runtime
         run: npm test
 
       - name: Emit summary
@@ -35,5 +35,6 @@ jobs:
           echo "Discord bot Codex review:" >> "$GITHUB_STEP_SUMMARY"
           echo "- Node.js 22 runtime pinned" >> "$GITHUB_STEP_SUMMARY"
           echo "- npm lockfile install reproduced with npm ci" >> "$GITHUB_STEP_SUMMARY"
+          echo "- devcontainer.json parsed successfully" >> "$GITHUB_STEP_SUMMARY"
           echo "- canvas native module loaded successfully" >> "$GITHUB_STEP_SUMMARY"
           echo "- bot syntax checks passed" >> "$GITHUB_STEP_SUMMARY"
