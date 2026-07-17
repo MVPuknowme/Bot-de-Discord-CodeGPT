@@ -9,8 +9,9 @@
   "scripts": {
     "start": "node index.js",
     "check": "node --check index.js && node --check canvasy.js",
+    "devcontainer:check": "node -e \"const fs = require('node:fs'); const config = JSON.parse(fs.readFileSync('.devcontainer/devcontainer.json', 'utf8')); if (config.build?.dockerfile !== 'Dockerfile') throw new Error('devcontainer Dockerfile is not configured'); console.log('devcontainer config valid');\"",
     "canvas:smoke": "node -e \"const { createCanvas } = require('canvas'); const canvas = createCanvas(2, 2); const png = canvas.toBuffer('image/png'); if (!Buffer.isBuffer(png) || png.length === 0) throw new Error('canvas smoke test failed'); console.log('canvas smoke test passed:', png.length, 'bytes');\"",
-    "test": "npm run check && npm run canvas:smoke"
+    "test": "npm run check && npm run devcontainer:check && npm run canvas:smoke"
   },
   "keywords": [
     "discord",
