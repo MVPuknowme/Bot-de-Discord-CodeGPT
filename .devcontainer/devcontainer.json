@@ -1,0 +1,25 @@
+{
+  "$schema": "https://raw.githubusercontent.com/devcontainers/spec/main/schemas/devContainer.schema.json",
+  "name": "Discord CodeGPT Bot - Node 22",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  "containerEnv": {
+    "NODE_ENV": "development",
+    "npm_config_audit": "false",
+    "npm_config_fund": "false"
+  },
+  "postCreateCommand": "npm ci --no-audit --no-fund && npm test",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "files.eol": "\n",
+        "terminal.integrated.defaultProfile.linux": "bash"
+      },
+      "extensions": [
+        "EditorConfig.EditorConfig"
+      ]
+    }
+  }
+}
