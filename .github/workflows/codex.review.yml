@@ -27,7 +27,7 @@ jobs:
       - name: Install dependencies
         run: npm ci --no-audit --no-fund
 
-      - name: Validate bot, dev container, and canvas runtime
+      - name: Validate agent, bot, dev container, and canvas runtime
         run: npm test
 
       - name: Emit summary
@@ -38,3 +38,4 @@ jobs:
           echo "- devcontainer.json parsed successfully" >> "$GITHUB_STEP_SUMMARY"
           echo "- canvas native module loaded successfully" >> "$GITHUB_STEP_SUMMARY"
           echo "- bot syntax checks passed" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Solana validation, lease intake, and Discord routing unit tests passed" >> "$GITHUB_STEP_SUMMARY"
